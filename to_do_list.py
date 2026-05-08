@@ -1,86 +1,148 @@
 #create an empty list to store the tasks and their status
+#now to upgrade to GUI using tkinter 
+import json
+import tkinter as tk
+from tkinter import ttk
+
 todo_list = []
+root = tk.Tk()
+root.title("Work To-Do List")
+
+entry = ttk.Entry(root)
+entry.pack()
+
+def add_task():
+    task = entry.get()
+    if task.strip() == "":
+        return
+    todo_list.append({"Task": task, "Status": "pending"})
+    entry.delete(0, tk.END)
+    save_to_json()
+    print(todo_list)
+    #listbox.insert(tk.END, f"{task} - pending")
+
+    update_listbox()
+
+button_add = ttk.Button(root, text="Add Task", command=add_task)
+button_add.pack()
+#entry.bind("<Return>", add_task)
+
+def save_to_json():
+    with open("todo_list.json", "w") as f:
+        json.dump(todo_list, f, indent=4)
+        print("Tasks saved to todo_list.json file successfully.")
+
+def load_from_json():
+    global todo_list
+    try:
+        with open("todo_list.json", "r") as f:
+            task_list = json.load(f)
+            todo_list.clear()
+            todo_list.extend(task_list)
+            update_listbox()
+            print("Tasks loaded from todo_list.json file successfully.")
+    except FileNotFoundError:
+        print("No existing todo_list.json file found. Starting with an empty task list.")
+
+def remove_task():
+    try:
+        selected = listbox.curselection()[0]
+        removed_task = todo_list.pop(selected)
+        print(f"Task removed is: {removed_task['Task']}")
+        print(todo_list)
+        save_to_json()
+        update_listbox()
+    except IndexError:
+        print("Select a task first")
+
+
+button_remove = ttk.Button(root, text = "Remove Task", command = remove_task)
+button_remove.pack()
+
+def mark_done():
+    try:
+        selected = listbox.curselection()[0]
+        done_task = todo_list[selected]
+        done_task["Status"] = "done"
+        print(f"Task marked done is: {done_task['Task']}")
+        print(todo_list)
+        save_to_json()
+        update_listbox()
+    except IndexError:
+        print("Select a task first")
+
+button_done = ttk.Button(root, text = "Mark Done", command = mark_done)
+button_done.pack()
+
+def update_listbox():
+    listbox.delete(0, tk.END)
+    for index, task in enumerate(todo_list, 1):
+        listbox.insert(tk.END, f"{index}: {task['Task']} - {task['Status']}")
+
+listbox = tk.Listbox(root)
+
+listbox.pack()  
+
+'''
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=3)
+root.rowconfigure(0, weight=1)
+#create a frame to hold the widgets
+frame = ttk.Frame(root)
+frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+
+frame.columnconfigure(0, weight=1)``
+frame.rowconfigure(1, weight=1)
+
+task_entry = ttk.Entry(frame)
+task_entry.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+
+add_button = ttk.Button(frame, text="Add Task", command=lambda: add_task(task_entry.get()))
+add_button.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+delete_button = ttk.Button(frame, text="Delete Task", command=remove_task)
+delete_button.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
+
+done_button = ttk.Button(frame, text="Mark Done", command=mark_done)
+done_button.grid(row=2, column=1, sticky="ew", padx=5, pady=5)
 
 
 #function to add task
-def add_task():
-    task = input("Enter the task: ")
+def add_task(task):
+    if task.strip() == "":
+        return
+    
     todo_list.append({"Task": task, "Status": "pending"})
-    print()
-    print("New task added sucessfully\n")
+    task_entry.delete(0, tk.END)
+    update_listbox()
 
-#Function to view task
-def view_task():
-    print("Your to-do list: ")
-    if len(todo_list) == 0:
-        print("No pending task")
-    else:
-        for index, task in enumerate(todo_list, 1):
-            print(f"{index}: {task['Task']} - {task['Status']}")
-    print('\n')
+def update_listbox():
+    text_list.delete(0, tk.END)
+    for index, task in enumerate(todo_list, 1):
+        text_list.insert(tk.END, f"{index}: {task['Task']} - {task['Status']}")
 
 #function to remove the task via index
 def remove_task():
-    if len(todo_list) == 0:
-        print("\n List is empty")
-    
-    else:
-        try:
-            search_index = int(input("Enter the task number that want to be removed: ")) - 1
-            if 0 <= search_index < len(todo_list):
-                removed_task = todo_list.pop(search_index)
-                print(f"Task removed is: {removed_task['Task']}")
-            else:
-                print("Invalid Task number")
-        
-        except ValueError:
-            print("Please enter valid Task number")
+    try:
+        selected = text_list.curselection()[0]
+        todo_list.pop(selected)
+        update_listbox()
+    except IndexError:
+        pass
 
 #Function to mark task done
-
 def mark_done():
-    if len(todo_list) == 0:
-        print("List is empty")
-    else:
-        try:
-            search_index = int(input("Enter the task number that want to be marked done: ")) - 1
-            if 0 <= search_index < len(todo_list):
-                todo_list[search_index]['Status'] = 'done'
-                print(f"Task {todo_list[search_index]['Task']} has been marked as Done")
-            else:
-                print("Invalid Task number")
-        except ValueError:
-            print("Please enter valid Task number")
+    try:
+        selected = text_list.curselection()[0]
+        todo_list[selected]["Status"] = "done"
+        update_listbox()
+    except IndexError:
+        pass
     
 
-#function to display a menu
-def menu():
-    while(True):       
-        print("***MAIN MENU***")
-        print("1. Add a new Task")
-        print("2. View all Tasks")
-        print("3. Remove a Task")
-        print("4. Mark the task completed")
-        print("5. Exit")
 
-        choice = input("Enter your choice: ")
-        if choice == "1":
-            add_task()
-        
-        elif choice == "2":
-            view_task()
-        
-        elif choice == "3":
-            remove_task()
 
-        elif choice == "4":
-            mark_done()
-        
-        elif choice == "5":
-            print("Exiting the application")
-            exit()
-        
-        else:
-            print("Inavlid input and try again")
- 
-menu()
+text_list = tk.Listbox(frame)
+text_list.grid(row=1, column=0, columnspan=2, sticky="nsew")
+'''
+load_from_json()
+root.mainloop()
