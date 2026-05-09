@@ -29,6 +29,9 @@ This project originally started as a command-line task manager and was later upg
 - Functions and reusable code
 - Scrollbar integration
 
+## Screenshots
+
+![Main App Screenshot](assets/screenshot1.png)
 ## How to Run
 
 ```bash
