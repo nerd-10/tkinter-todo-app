@@ -1,13 +1,18 @@
-# To-Do List CLI
+# Python To-Do List App
 
-1. A command-line Python application to manage daily tasks.
-2. Upgrading to GUI
+A Python desktop To-Do application built with Tkinter.
+
+This project originally started as a command-line task manager and was later upgraded into a GUI desktop application to practice event-driven programming, UI layout management, and JSON persistence.
 
 ## Features
-- Add new tasks
-- View all tasks
-- Remove a task
+- Add tasks
+- Remove tasks
 - Mark tasks as completed
+- Save tasks using JSON
+- Load tasks automatically on startup
+- Scrollable task list
+- Keyboard Enter support
+- User feedback messages
 
 ## Technologies Used
 - Python
@@ -15,15 +20,18 @@
 - JSON
 - File Handling
 
-## Concepts Covered
-- Lists and dictionaries
-- Functions
-- Loops and conditionals
-- Error handling with try/except
-- JSON
-- GUI
+## Concepts Practiced
+- Event-driven programming
+- GUI layout using grid()
+- State management
+- JSON persistence
+- Error handling
+- Functions and reusable code
+- Scrollbar integration
 
 ## How to Run
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/nerd-10/to-do-list-cli
+
+```bash
+git clone https://github.com/nerd-10/to-do-list-cli
+cd to-do-list-cli
+python to_do_list.py
